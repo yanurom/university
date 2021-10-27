@@ -11,8 +11,7 @@ class valid {
         typeof value == "number" ||
         typeof value == "boolean" ||
         Object.prototype.toString.callvalue === "[object Date]"
-      )
-        return false;
+      ) return false;
   
       if (value == null || value.length === 0) return true;
   
