@@ -1,5 +1,8 @@
 const express = require('express');
 const userRouter = require('./resources/users/user.router');
+const abiturientRouter = require('./resources/abiturient/abiturient.router');
+const examRouter = require('./resources/exam/exam.router');
+const teacherRouter = require('./resources/teacher/teacher.router');
 
 const app = express();
 
@@ -14,5 +17,8 @@ app.use('/', (req, res, next) => {
 });
 
 app.use('/users', userRouter);
+app.use('/abiturients', abiturientRouter);
+app.use('/exams', examRouter);
+app.use('/teachers', teacherRouter);
 
 module.exports = app;
