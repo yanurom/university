@@ -1,5 +1,4 @@
 
-
 const mock = [
   {
     id: '1',
@@ -76,32 +75,42 @@ const mock = [
     score: 1,
   },
 ];
-
-const constraintsCheck = async (teacherId, abiturientId) => {
-  // TODO: make it more clean
-  const abiturientRepo = require('../abiturient/abiturient.memory.repository')
-  const teacherRepo = require('../teacher/teacher.memory.repository')
-
-  return ((await teacherRepo.getAll()).filter(_ => _.id === teacherId).length > 0
-  && (await abiturientRepo.getAll()).filter(_ => _.id === abiturientId).length > 0);
+const repos = {
+  abiturientRepo: null,
+  teacherRepo: null,
+};
+const initRepo = async ({ abiturientRepo, teacherRepo }) => {
+  repos.abiturientRepo = abiturientRepo;
+  repos.teacherRepo = teacherRepo;
 }
+
+const constraintsCheck = async (teacherId, abiturientId) => ((await repos.teacherRepo.getAll()).filter(_ => _.id === teacherId).length > 0
+  && (await repos.abiturientRepo.getAll()).filter(_ => _.id === abiturientId).length > 0)
+
+const deleteExam = async (id) => {
+  const index = mock.findIndex(_ => _.id === id);
+
+  if (index >= 0) {
+    const exams = mock.splice(index, 1);
+    return exams[0];
+  } 
+
+  return { message: `No exam with id: ${  id}` }
+};
 
 const cascadeDeleteMock = async () => {
   const pendingDelete = [];
 
-  for (const exam of mock) {
+  mock.forEach(exam => {
     if (exam.teacherId === null && exam.abiturientId === null) {
       pendingDelete.push(exam.id);
     }
-  }
+  });
 
   const allPromises = [];
   pendingDelete.forEach(id => allPromises.push(deleteExam(id)))
   await Promise.all(allPromises);
-
-  console.log('ANIME', mock);
 };
-
 
 const getAll = async () => mock;
 
@@ -121,18 +130,4 @@ const updateExam = async (exam) => {
   return mock[index];
 }; 
 
-const deleteExam = async (id) => {
-  const index = mock.findIndex(_ => _.id === id);
-
-  if (index >= 0) {
-    const exams = mock.splice(index, 1);
-
-    return exams[0];
-  } else {
-    return { message: 'No exam with id: ' + id }
-  }
-
-  // TODO: remove links
-};
-
-module.exports = { getAll, updateExam, deleteExam, examCascadeMock: cascadeDeleteMock, createExam };
+module.exports = { getAll, updateExam, deleteExam, examCascadeMock: cascadeDeleteMock, createExam, initRepo };

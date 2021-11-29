@@ -41,7 +41,8 @@ const mock = [
 
 const cascadeDeleteMock = async (id) => {
   const allExams = await examRepo.getAll();
-  allExams.forEach(exam => {
+  allExams.forEach(_exam => {
+    const exam = _exam;
     if (exam.teacherId === id) {
       exam.teacherId = null;
     }
@@ -72,9 +73,9 @@ const deleteTeacher = async (id) => {
     cascadeDeleteMock(id);
 
     return teachers[0];
-  } else {
-    return { message: 'No teacher with id: ' + id }
-  }
+  } 
+    return { message: `No teacher with id: ${  id}` }
+  
 };
 
 module.exports = { getAll, createTeacher, updateTeacher, deleteTeacher };

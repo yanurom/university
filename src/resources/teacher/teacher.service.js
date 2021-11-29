@@ -4,7 +4,7 @@ const getAll = () => teacherRepo.getAll();
 const getById = async (id) => (await teacherRepo.getAll()).find(_ => _.id === id);
 const createTeacher = async (lastName, firstName, degree) => {
     const all = await teacherRepo.getAll();
-    const id = +all[all.length-1].id + 1 + ''; // TODO:
+    const id = `${+all[all.length-1].id + 1}`;
     const teacher = {
         id,
         lastName,

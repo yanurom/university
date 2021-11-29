@@ -29,7 +29,9 @@ const mock = [
 
 const cascadeDeleteMock = async (id) => {
   const allExams = await examRepo.getAll();
-  allExams.forEach(exam => {
+
+  allExams.forEach(_exam => {
+    const exam = _exam;
     if (exam.abiturientId === id) {
       exam.abiturientId = null;
     }
@@ -59,12 +61,9 @@ const deleteAbiturient = async (id) => {
     cascadeDeleteMock(id);
 
     return abiturients[0];
-  } else {
-    return { message: 'No user with id: ' + id }
-  }
+  } 
 
-  // TODO: remove links
-
+  return { message: `No user with id: ${  id}` }
 };
 
 module.exports = { getAll, createAbiturient, updateAbiturient, deleteAbiturient };

@@ -4,7 +4,6 @@ const abiturientService = require('./abiturient.service');
 const examService = require('../exam/exam.service');
 const Exam = require('../exam/exam.model');
 
-const uuid = require('uuid')
 
 router.route('/').get(async (req, res) => {
   const abiturients = await abiturientService.getAll();

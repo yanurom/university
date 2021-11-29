@@ -4,7 +4,7 @@ const getAll = () => abiturientRepo.getAll();
 const getById = async (id) => (await abiturientRepo.getAll()).find(_ => _.id === id);
 const createAbiturient = async (lastName, firstName, numCertificate) => {
     const all = await abiturientRepo.getAll();
-    const id = +all[all.length-1].id + 1 + ''; // TODO:
+    const id = `${+all[all.length-1].id + 1}`;
     const abiturient = {
         id,
         lastName,

@@ -3,6 +3,7 @@ const userRouter = require('./resources/users/user.router');
 const abiturientRouter = require('./resources/abiturient/abiturient.router');
 const examRouter = require('./resources/exam/exam.router');
 const teacherRouter = require('./resources/teacher/teacher.router');
+const reposInitAction = require('./actions/reposInitAction');
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use('/', (req, res, next) => {
   }
   next();
 });
+
+reposInitAction();
 
 app.use('/users', userRouter);
 app.use('/abiturients', abiturientRouter);
