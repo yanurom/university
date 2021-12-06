@@ -1,6 +1,15 @@
+export {};
+
 const examRepo = require('../exam/exam.memory.repository');
 
-const mock = [
+export interface Teacher {
+  "id": string;
+  "lastName": string;
+  "firstName": string;
+  "degree": string;
+}
+
+const teacherMock: Teacher[] = [
   {
     id: '112',
     lastName: 'teacherLastName1',
@@ -39,9 +48,9 @@ const mock = [
   },
 ];
 
-const cascadeDeleteMock = async (id) => {
+const cascadeDeleteMock = async (id: string) => {
   const allExams = await examRepo.getAll();
-  allExams.forEach(_exam => {
+  allExams.forEach((_exam: ) => {
     const exam = _exam;
     if (exam.teacherId === id) {
       exam.teacherId = null;
@@ -50,25 +59,25 @@ const cascadeDeleteMock = async (id) => {
   await examRepo.examCascadeMock();
 };
 
-const getAll = async () => mock;
+const getAll = async () => teacherMock;
 
-const createTeacher = async (teacher) => mock.push(teacher); 
+const createTeacher = async (teacher: Teacher) => teacherMock.push(teacher); 
 
-const updateTeacher = async (teacher) => {
-  const index = mock.findIndex(_ => _.id === teacher.id);
+const updateTeacher = async (teacher: Teacher) => {
+  const index = teacherMock.findIndex(_ => _.id === teacher.id);
 
-  mock[index].firstName = teacher.firstName || mock[index].firstName;
-  mock[index].lastName = teacher.lastName || mock[index].lastName;
-  mock[index].degree = teacher.degree || mock[index].degree;
+  teacherMock[index]!.firstName = teacher.firstName || teacherMock[index]!.firstName;
+  teacherMock[index]!.lastName = teacher.lastName || teacherMock[index]!.lastName;
+  teacherMock[index]!.degree = teacher.degree || teacherMock[index]!.degree;
 
-  return mock[index];
+  return teacherMock[index];
 }; 
 
-const deleteTeacher = async (id) => {
-  const index = mock.findIndex(_ => _.id === id);
+const deleteTeacher = async (id: string) => {
+  const index = teacherMock.findIndex((teacher) => teacher.id === id);
 
   if (index >= 0) {
-    const teachers = mock.splice(index, 1);
+    const teachers = teacherMock.splice(index, 1);
 
     cascadeDeleteMock(id);
 

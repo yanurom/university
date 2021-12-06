@@ -1,5 +1,15 @@
+export {};
 
-const mock = [
+export interface Exam {
+  "id": string;
+  "abiturientId": string;
+  "teacherId": string;
+  "subject": string;
+  "date": string;
+  "score": number;
+}
+
+const examsMock: Exam[] = [
   {
     id: '1',
     abiturientId: '124',
@@ -87,11 +97,11 @@ const initRepo = async ({ abiturientRepo, teacherRepo }) => {
 const constraintsCheck = async (teacherId, abiturientId) => ((await repos.teacherRepo.getAll()).filter(_ => _.id === teacherId).length > 0
   && (await repos.abiturientRepo.getAll()).filter(_ => _.id === abiturientId).length > 0)
 
-const deleteExam = async (id) => {
-  const index = mock.findIndex(_ => _.id === id);
+const deleteExam = async (id: string) => {
+  const index = examsMock.findIndex(_ => _.id === id);
 
   if (index >= 0) {
-    const exams = mock.splice(index, 1);
+    const exams = examsMock.splice(index, 1);
     return exams[0];
   } 
 
@@ -101,7 +111,7 @@ const deleteExam = async (id) => {
 const cascadeDeleteMock = async () => {
   const pendingDelete = [];
 
-  mock.forEach(exam => {
+  examsMock.forEach(exam => {
     if (exam.teacherId === null && exam.abiturientId === null) {
       pendingDelete.push(exam.id);
     }
@@ -112,22 +122,22 @@ const cascadeDeleteMock = async () => {
   await Promise.all(allPromises);
 };
 
-const getAll = async () => mock;
+const getAll = async () => examsMock;
 
-const createExam = async (exam) => (await constraintsCheck(exam.teacherId, exam.abiturientId))
-  ? mock.push(exam)
+const createExam = async (exam: Exam) => (await constraintsCheck(exam.teacherId, exam.abiturientId))
+  ? examsMock.push(exam)
   : 0;
 
-const updateExam = async (exam) => {
-  const index = mock.findIndex(_ => _.id === exam.id);
+const updateExam = async (updatedExam: Exam) => {
+  const index = examsMock.findIndex((exam: Exam) => exam.id === updatedExam.id);
 
-  mock[index].abiturientId = exam.abiturientId || mock[index].abiturientId;
-  mock[index].teacherId = exam.teacherId || mock[index].teacherId;
-  mock[index].subject = exam.subject || mock[index].subject;
-  mock[index].date = exam.date || mock[index].date;
-  mock[index].score = exam.score || mock[index].score;
+  examsMock[index]!.abiturientId = updatedExam.abiturientId || examsMock[index]!.abiturientId;
+  examsMock[index]!.teacherId = updatedExam.teacherId || examsMock[index]!.teacherId;
+  examsMock[index]!.subject = updatedExam.subject || examsMock[index]!.subject;
+  examsMock[index]!.date = updatedExam.date || examsMock[index]!.date;
+  examsMock[index]!.score = updatedExam.score || examsMock[index]!.score;
 
-  return mock[index];
+  return examsMock[index];
 }; 
 
 module.exports = { getAll, updateExam, deleteExam, examCascadeMock: cascadeDeleteMock, createExam, initRepo };

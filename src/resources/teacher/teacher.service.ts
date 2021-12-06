@@ -1,3 +1,5 @@
+export {};
+
 const teacherRepo = require('./teacher.memory.repository');
 
 const getAll = () => teacherRepo.getAll();

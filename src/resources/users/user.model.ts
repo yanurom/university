@@ -1,3 +1,5 @@
+export {};
+
 const uuid = require('uuid');
 
 class User {

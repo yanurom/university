@@ -1,6 +1,12 @@
+export {};
+
 const uuid = require('uuid');
 
 class Abiturient {
+  "id": string;
+  "lastName": string;
+  "firstName": string;
+  "numCertificate": number;
   constructor({
       id = uuid(),
       lastName = 'lastName',
@@ -13,7 +19,7 @@ class Abiturient {
     this.numCertificate = numCertificate;
   }
 
-  static toResponse(abiturient) {
+  static toResponse(abiturient: Abiturient) {
     // const { id, lastName, firstName, numCertificate } = abiturient;
     // return { id, lastName, firstName, numCertificate };
     return { ...abiturient }

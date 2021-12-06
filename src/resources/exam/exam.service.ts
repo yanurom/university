@@ -1,3 +1,5 @@
+export {};
+
 const examRepo = require('./exam.memory.repository');
 
 const getAll = () => examRepo.getAll();

@@ -1,8 +1,10 @@
+import {Request, Response } from "express";
+
 const router = require('express').Router();
 const User = require('./user.model');
 const usersService = require('./user.service');
 
-router.route('/').get(async (req, res) => {
+router.route('/').get(async (req: Request, res: Response) => {
   const users = await usersService.getAll();
   // map user fields to exclude secret fields like "password"
   res.json(users.map(User.toResponse));

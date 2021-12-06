@@ -1,3 +1,5 @@
+import { Application, Request, Response, NextFunction } from "express";
+
 const express = require('express');
 const userRouter = require('./resources/users/user.router');
 const abiturientRouter = require('./resources/abiturient/abiturient.router');
@@ -5,11 +7,11 @@ const examRouter = require('./resources/exam/exam.router');
 const teacherRouter = require('./resources/teacher/teacher.router');
 const reposInitAction = require('./actions/reposInitAction');
 
-const app = express();
+const app : Application = express();
 
 app.use(express.json());
 
-app.use('/', (req, res, next) => {
+app.use('/', (req: Request, res: Response, next: NextFunction) => {
   if (req.originalUrl === '/') {
     res.send('Service is running!');
     return;
