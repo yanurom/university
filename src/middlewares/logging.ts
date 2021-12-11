@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../common/logger';
-import config from '../common/config';
+// import config from '../common/config';
 
-const { PORT } = config;
+// const { PORT } = config;
 
 export const logging = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     logger.http(`
     method:           ${req.method}
-    url:              ${`http://localhost:${PORT}${req.baseUrl + req.url}`}
+    url:              ${`http://localhost:${4000}${req.baseUrl + req.url}`}
     body:             ${JSON.stringify(req.body)}
     query:            ${JSON.stringify(req.query)}
     params:           ${JSON.stringify(req.params)}
