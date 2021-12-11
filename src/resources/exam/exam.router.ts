@@ -3,10 +3,8 @@ import Exam from './exam.model';
 import Teacher from '../teacher/teacher.model';
 import examService from './exam.service';
 import teacherService from '../teacher/teacher.service';
-// import log4js from 'log4js';
 
 const router = express.Router();
-// const log = log4js.getLogger("request");
 
 router.route('/').get(async (req: Request, res: Response, next: NextFunction) => {
   const exams = await examService.getAll();
