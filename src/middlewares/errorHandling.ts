@@ -1,11 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
-import fs from 'fs';
-import path from 'path';
-import stream from 'stream';
-import util from 'util';
-
-const pipeline = util.promisify(stream.pipeline);
+import { StatusCodes, getReasonPhrase } from 'http-status-codes';import { logger } from '../common/logger';
+;
 
 export const errorHandling = async (
   error: Error,
@@ -13,29 +8,22 @@ export const errorHandling = async (
   res: Response,
   _next: NextFunction,
 ) => {
-  const { name, message, stack } = error;
+  const { name, message } = error;
   const statusCode = name === 'Error' ? StatusCodes.NOT_FOUND : StatusCodes.INTERNAL_SERVER_ERROR;
   const messageReason = getReasonPhrase(statusCode);
-  const logsFolder = path.join(__dirname, '../../logs');
-
-  if (!fs.existsSync(logsFolder)) {
-    fs.mkdirSync(logsFolder);
-  }
 
   try {
-    await pipeline(
-      stream.Readable.from(`
-      status code:     ${statusCode}
-      errorName:       ${name}
-      errorMessage:    ${message}
-      errorStack:      ${stack}\n
-      `),
-      fs.createWriteStream(path.join(__dirname, '../../logs/errorHandling.txt'), {
-        flags: 'a',
-      }),
-    );
+    logger.error(`
+     status code:     ${statusCode}
+     errorName:       ${name}
+     errorMessage:    ${message}
+     `);
+
+    // status code:     ${statusCode}
+    //   errorName:       ${name}
+    //   errorMessage:    ${message}
   } catch (er) {
-    process.stderr.write(er.message);
+    // @ts-ignore
     process.exit(1);
   }
 
