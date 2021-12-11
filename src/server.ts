@@ -1,6 +1,6 @@
-import config  from './common/config';
+// import config  from './common/config';
 import application from './app';
 
-application.listen(config.PORT, () =>
-  console.log(`App is running on http://localhost:${config.PORT}`) // eslint-disable-line no-console
+application.listen(4000, () =>
+  console.log(`App is running on http://localhost:${4000}`) // eslint-disable-line no-console
 );
