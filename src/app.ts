@@ -1,13 +1,12 @@
 import { Application, Request, Response, NextFunction } from "express";
 
-const express = require('express');
-const userRouter = require('./resources/users/user.router');
-const abiturientRouter = require('./resources/abiturient/abiturient.router');
-const examRouter = require('./resources/exam/exam.router');
-const teacherRouter = require('./resources/teacher/teacher.router');
-const reposInitAction = require('./actions/reposInitAction');
+import express from 'express';
+import abiturientRouter from './resources/abiturient/abiturient.router';
+import examRouter from './resources/exam/exam.router';
+import teacherRouter from './resources/teacher/teacher.router';
+import { reposInitAction } from './actions/reposInitAction';
 
-const app : Application = express();
+const app: Application = express();
 
 app.use(express.json());
 
@@ -21,9 +20,9 @@ app.use('/', (req: Request, res: Response, next: NextFunction) => {
 
 reposInitAction();
 
-app.use('/users', userRouter);
 app.use('/abiturients', abiturientRouter);
 app.use('/exams', examRouter);
 app.use('/teachers', teacherRouter);
 
-module.exports = app;
+export default app;
+// module.exports = app;

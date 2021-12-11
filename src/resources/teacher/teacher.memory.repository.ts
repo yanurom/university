@@ -1,6 +1,6 @@
 export {};
-
-const examRepo = require('../exam/exam.memory.repository');
+import { Exam } from "resources/exam/exam.memory.repository";
+import examRepo from '../exam/exam.memory.repository';
 
 export interface Teacher {
   "id": string;
@@ -50,7 +50,7 @@ const teacherMock: Teacher[] = [
 
 const cascadeDeleteMock = async (id: string) => {
   const allExams = await examRepo.getAll();
-  allExams.forEach((_exam: ) => {
+  allExams.forEach((_exam: Exam) => {
     const exam = _exam;
     if (exam.teacherId === id) {
       exam.teacherId = null;
@@ -82,9 +82,19 @@ const deleteTeacher = async (id: string) => {
     cascadeDeleteMock(id);
 
     return teachers[0];
-  } 
-    return { message: `No teacher with id: ${  id}` }
-  
+  }
+
+  return { message: `No teacher with id: ${  id}` }
 };
 
-module.exports = { getAll, createTeacher, updateTeacher, deleteTeacher };
+export type TeacherRepo = {
+  getAll: () => Promise<Teacher[]>,
+  createTeacher: (teacher: Teacher) => Promise<number>,
+  updateTeacher: (teacher: Teacher) => Promise<Teacher | undefined>,
+  deleteTeacher: (id: string) => Promise<Teacher | {
+    message: string;
+  } | undefined>
+}
+
+export default { getAll, createTeacher, updateTeacher, deleteTeacher };
+// module.exports = { getAll, createTeacher, updateTeacher, deleteTeacher };

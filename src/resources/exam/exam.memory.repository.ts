@@ -1,12 +1,13 @@
-export {};
+import { AbiturientRepo } from "resources/abiturient/abiturient.memory.repository";
+import { TeacherRepo } from "resources/teacher/teacher.memory.repository";
 
 export interface Exam {
-  "id": string;
-  "abiturientId": string;
-  "teacherId": string;
-  "subject": string;
-  "date": string;
-  "score": number;
+  id: string;
+  abiturientId: string | null;
+  teacherId: string | null;
+  subject: string;
+  date: string;
+  score: number;
 }
 
 const examsMock: Exam[] = [
@@ -85,17 +86,17 @@ const examsMock: Exam[] = [
     score: 1,
   },
 ];
-const repos = {
+const repos: {abiturientRepo: AbiturientRepo | null, teacherRepo: TeacherRepo | null} = {
   abiturientRepo: null,
   teacherRepo: null,
 };
-const initRepo = async ({ abiturientRepo, teacherRepo }) => {
+const initRepo = async ({ abiturientRepo, teacherRepo } : {abiturientRepo: AbiturientRepo, teacherRepo: TeacherRepo}) => {
   repos.abiturientRepo = abiturientRepo;
   repos.teacherRepo = teacherRepo;
 }
 
-const constraintsCheck = async (teacherId, abiturientId) => ((await repos.teacherRepo.getAll()).filter(_ => _.id === teacherId).length > 0
-  && (await repos.abiturientRepo.getAll()).filter(_ => _.id === abiturientId).length > 0)
+const constraintsCheck = async (teacherId: string | null, abiturientId: string | null) => ((await repos.teacherRepo!.getAll()).filter(_ => _.id === teacherId).length > 0
+  && (await repos.abiturientRepo!.getAllAbiturients()).filter(_ => _.id === abiturientId).length > 0)
 
 const deleteExam = async (id: string) => {
   const index = examsMock.findIndex(_ => _.id === id);
@@ -109,7 +110,7 @@ const deleteExam = async (id: string) => {
 };
 
 const cascadeDeleteMock = async () => {
-  const pendingDelete = [];
+  const pendingDelete: string[] = [];
 
   examsMock.forEach(exam => {
     if (exam.teacherId === null && exam.abiturientId === null) {
@@ -117,7 +118,9 @@ const cascadeDeleteMock = async () => {
     }
   });
 
-  const allPromises = [];
+  const allPromises: Promise<Exam | {
+    message: string;
+} | undefined>[] = [];
   pendingDelete.forEach(id => allPromises.push(deleteExam(id)))
   await Promise.all(allPromises);
 };
@@ -137,7 +140,8 @@ const updateExam = async (updatedExam: Exam) => {
   examsMock[index]!.date = updatedExam.date || examsMock[index]!.date;
   examsMock[index]!.score = updatedExam.score || examsMock[index]!.score;
 
-  return examsMock[index];
-}; 
+  return examsMock[index]!;
+};
 
-module.exports = { getAll, updateExam, deleteExam, examCascadeMock: cascadeDeleteMock, createExam, initRepo };
+export default { getAll, updateExam, deleteExam, examCascadeMock: cascadeDeleteMock, createExam, initRepo };
+// module.exports = { getAll, updateExam, deleteExam, examCascadeMock: cascadeDeleteMock, createExam, initRepo };

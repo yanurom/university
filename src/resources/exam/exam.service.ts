@@ -1,15 +1,14 @@
-export {};
-
-const examRepo = require('./exam.memory.repository');
+import { Exam } from "./exam.memory.repository";
+import examRepo from './exam.memory.repository';
 
 const getAll = () => examRepo.getAll();
-const getById = async (id) => (await examRepo.getAll()).find(_ => _.id === id);
-const getExamsByAbiturientId = async (id) => (await examRepo.getAll()).filter(_ => _.abiturientId === id);
-const getExamsByTeacherId = async (id) => (await examRepo.getAll()).filter(_ => _.teacherId === id);
-const createExam = async (abiturientId, teacherId, subject, date, score) => {
+const getById = async (id: string) => (await examRepo.getAll()).find((_: Exam) => _.id === id);
+const getExamsByAbiturientId = async (id: string) => (await examRepo.getAll()).filter((_: Exam) => _.abiturientId === id);
+const getExamsByTeacherId = async (id: string) => (await examRepo.getAll()).filter((_: Exam) => _.teacherId === id);
+const createExam = async (abiturientId: string, teacherId: string, subject: string, date: string, score: number) => {
     const all = await examRepo.getAll();
-    const id = `${+all[all.length-1].id + 1}`;
-    const exam = {
+    const id = `${+all[all.length-1]!.id + 1}`;
+    const exam: Exam = {
         id,
         abiturientId,
         teacherId,
@@ -25,7 +24,7 @@ const createExam = async (abiturientId, teacherId, subject, date, score) => {
     throw new Error('Constraints check fail.')
 };
 
-const updateExam = (abiturient) => examRepo.updateExam(abiturient);
-const deleteExam = (id) => examRepo.deleteExam(id);
+const updateExam = (exam: Exam) => examRepo.updateExam(exam);
+const deleteExam = (id: string) => examRepo.deleteExam(id);
 
-module.exports = { getAll, getById, getExamsByAbiturientId, getExamsByTeacherId, updateExam, deleteExam, createExam };
+export default { getAll, getById, getExamsByAbiturientId, getExamsByTeacherId, updateExam, deleteExam, createExam };

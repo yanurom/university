@@ -1,12 +1,11 @@
-export {};
-import { Abiturient } from "./abiturient.memory.repository";
-const abiturientRepo = require('./abiturient.memory.repository');
+import abiturientRepo from "./abiturient.memory.repository";
+import Abiturient from "./abiturient.model";
 
-const getAll = () => abiturientRepo.getAll();
-const getById = async (id: string) => (await abiturientRepo.getAll()).find((abiturient: Abiturient) => abiturient.id === id);
+const getAll = () => abiturientRepo.getAllAbiturients();
+const getById = async (id: string) => (await abiturientRepo.getAllAbiturients()).find((abiturient: Abiturient) => abiturient.id === id);
 const createAbiturient = async (lastName: string, firstName: string, numCertificate: number) => {
-    const all = await abiturientRepo.getAll();
-    const id = `${+all[all.length-1].id + 1}`;
+    const all = await abiturientRepo.getAllAbiturients();
+    const id = `${+all[all.length-1]!.id + 1}`;
     const abiturient: Abiturient = {
         id,
         lastName,
@@ -21,4 +20,5 @@ const createAbiturient = async (lastName: string, firstName: string, numCertific
 const updateAbiturient = (abiturient: Abiturient) => abiturientRepo.updateAbiturient(abiturient);
 const deleteAbiturient = (id: string) => abiturientRepo.deleteAbiturient(id);
 
-module.exports = { getAll, getById, createAbiturient, updateAbiturient, deleteAbiturient };
+export default { getAll, getById, createAbiturient, updateAbiturient, deleteAbiturient };
+// module.exports = { getAll, getById, createAbiturient, updateAbiturient, deleteAbiturient };

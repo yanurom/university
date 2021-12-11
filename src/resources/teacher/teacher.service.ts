@@ -1,12 +1,12 @@
-export {};
+import { Teacher } from "./teacher.memory.repository";
 
-const teacherRepo = require('./teacher.memory.repository');
+import teacherRepo from './teacher.memory.repository';
 
 const getAll = () => teacherRepo.getAll();
-const getById = async (id) => (await teacherRepo.getAll()).find(_ => _.id === id);
-const createTeacher = async (lastName, firstName, degree) => {
+const getById = async (id: string) => (await teacherRepo.getAll()).find((_: Teacher) => _.id === id);
+const createTeacher = async (lastName: string, firstName: string, degree: string) => {
     const all = await teacherRepo.getAll();
-    const id = `${+all[all.length-1].id + 1}`;
+    const id = `${+all[all.length-1]!.id + 1}`;
     const teacher = {
         id,
         lastName,
@@ -18,7 +18,7 @@ const createTeacher = async (lastName, firstName, degree) => {
 
     return teacher;
 };
-const updateTeacher = (teacher) => teacherRepo.updateTeacher(teacher);
-const deleteTeacher = (id) => teacherRepo.deleteTeacher(id);
+const updateTeacher = (teacher: Teacher) => teacherRepo.updateTeacher(teacher);
+const deleteTeacher = (id: string) => teacherRepo.deleteTeacher(id);
 
-module.exports = { getAll, getById, createTeacher, updateTeacher, deleteTeacher };
+export default { getAll, getById, createTeacher, updateTeacher, deleteTeacher };

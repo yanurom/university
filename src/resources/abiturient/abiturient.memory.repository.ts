@@ -1,12 +1,12 @@
-export {};
+import examRepo, { Exam } from "../exam/exam.memory.repository";
+import Abiturient from "./abiturient.model";
 
-const examRepo = require ("./../../actions/reposInitAction");
-export interface Abiturient {
-  "id": string;
-  "lastName": string;
-  "firstName": string;
-  "numCertificate": number;
-}
+// export interface Abiturient {
+//   "id": string;
+//   "lastName": string;
+//   "firstName": string;
+//   "numCertificate": number;
+// }
 
 const abiturientMock: Abiturient[] = [
   {
@@ -38,13 +38,13 @@ const abiturientMock: Abiturient[] = [
 const cascadeDeleteabiturientMock = async (id: string) => {
   const allExams = await examRepo.getAll();
 
-  allExams.forEach((_exam) => {
+  allExams.forEach((_exam: Exam) => {
     const exam = _exam;
     if (exam.abiturientId === id) {
       exam.abiturientId = null;
     }
   });
-  await examRepo.examCascadeabiturientMock();
+  await examRepo.examCascadeMock();
 };
 
 
@@ -74,4 +74,14 @@ const deleteAbiturient = async (id: string) => {
   return { message: `No user with id: ${  id}` }
 };
 
-module.exports = { getAllAbiturients, createAbiturient, updateAbiturient, deleteAbiturient };
+export type AbiturientRepo = {
+  getAllAbiturients: () => Promise<Abiturient[]>,
+  createAbiturient: (abiturient: Abiturient) => Promise<number>,
+  updateAbiturient: (abiturient: Abiturient) => Promise<Abiturient | undefined>,
+  deleteAbiturient: (id: string) => Promise<Abiturient | {
+    message: string;
+  } | undefined>
+}
+
+export default { getAllAbiturients, createAbiturient, updateAbiturient, deleteAbiturient };
+// module.exports = { getAllAbiturients, createAbiturient, updateAbiturient, deleteAbiturient };

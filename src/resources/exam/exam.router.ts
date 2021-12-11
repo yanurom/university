@@ -1,12 +1,10 @@
-export {};
+import express, { Request, Response } from "express";
+import Exam from './exam.model';
+import Teacher from '../teacher/teacher.model';
+import examService from './exam.service';
+import teacherService from '../teacher/teacher.service';
 
-import {Request, Response } from "express";
-
-const router = require('express').Router();
-const Exam = require('./exam.model');
-const Teacher = require('../teacher/teacher.model');
-const examService = require('./exam.service');
-const teacherService = require('../teacher/teacher.service');
+const router = express.Router();
 
 router.route('/').get(async (req: Request, res: Response) => {
   const exams = await examService.getAll();
@@ -16,7 +14,7 @@ router.route('/').get(async (req: Request, res: Response) => {
 
 router.route('/:examId').get(async (req: Request, res: Response) => {
     const { examId } = req.params;
-    const exam = await examService.getById(examId);
+    const exam = await examService.getById(examId!);
 
     if (!exam) {
         res.json({});
@@ -28,8 +26,8 @@ router.route('/:examId').get(async (req: Request, res: Response) => {
 
 router.route('/:examId/teachers').get(async (req: Request, res: Response) => {
     const { examId } = req.params;
-    const exam = await examService.getById(examId);
-    const teacher = await teacherService.getById(exam.teacherId);
+    const exam = await examService.getById(examId!);
+    const teacher = await teacherService.getById(exam!.teacherId!);
 
     if (!teacher) {
         res.json({});
@@ -55,10 +53,10 @@ router.route('/').post(async (req: Request, res: Response) => {
 router.route('/:examId').put(async (req: Request, res: Response) => {
     const { examId } = req.params;
     const { abiturientId, teacherId, subject, date, score } = req.body;
-    const old = {...await examService.getById(examId)};
+    const old: Exam = {...await examService.getById(examId!)} as Exam;
 
-    const updated = await examService.updateExam({
-        id: examId,
+    const updated: Exam = await examService.updateExam({
+        id: examId!,
         abiturientId,
         teacherId,
         subject,
@@ -72,9 +70,10 @@ router.route('/:examId').put(async (req: Request, res: Response) => {
 router.route('/:examId').delete(async (req: Request, res: Response) => {
     const { examId } = req.params;
 
-    const deleted = await examService.deleteExam(examId);
+    const deleted = await examService.deleteExam(examId!);
 
-    res.send(`Deleted: ${JSON.stringify(Exam.toResponse(deleted))}`);
+    res.send(`Deleted: ${JSON.stringify(Exam.toResponse(deleted as Exam))}`);
 });
 
-module.exports = router;
+// module.exports = router;
+export default router;

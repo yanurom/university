@@ -1,14 +1,12 @@
-export {};
 
-const uuid = require('uuid');
+export default class Abiturient {
+  id: string;
+  lastName: string;
+  firstName: string;
+  numCertificate: number;
 
-class Abiturient {
-  "id": string;
-  "lastName": string;
-  "firstName": string;
-  "numCertificate": number;
   constructor({
-      id = uuid(),
+      id = `${Math.random() * 10000}`,
       lastName = 'lastName',
       firstName = 'firstName',
       numCertificate = 0x0001,
@@ -25,5 +23,3 @@ class Abiturient {
     return { ...abiturient }
   }
 }
-
-module.exports = Abiturient;

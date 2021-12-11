@@ -1,10 +1,9 @@
-export {};
-const examRepo = require("../resources/exam/exam.memory.repository")
-const teacherRepo = require('../resources/teacher/teacher.memory.repository')
-const abiturientRepo = require('../resources/abiturient/abiturient.memory.repository')
+import examRepo from "../resources/exam/exam.memory.repository";
+import teacherRepo from '../resources/teacher/teacher.memory.repository';
+import abiturientRepo from '../resources/abiturient/abiturient.memory.repository';
 
-const reposInitAction = async () => {
+const reposInitAction = async () : Promise<void> => {
     await examRepo.initRepo({ abiturientRepo, teacherRepo });
 };
 
-module.exports = {reposInitAction, examRepo, teacherRepo, abiturientRepo};
+export { reposInitAction };

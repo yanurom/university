@@ -1,8 +1,6 @@
-import { Application } from "express";
+import config  from './common/config';
+import application from './app';
 
-const { PORT } = require('./common/config');
-const application : unknown = require('./app');
-
-application.listen(PORT, () =>
-  console.log(`App is running on http://localhost:${PORT}`) // eslint-disable-line no-console
+application.listen(config.PORT, () =>
+  console.log(`App is running on http://localhost:${config.PORT}`) // eslint-disable-line no-console
 );

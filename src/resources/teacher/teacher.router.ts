@@ -1,12 +1,10 @@
-export {};
+import express, { Request, Response } from "express";
+import Teacher from './teacher.model';
+import Exam from '../exam/exam.model';
+import teacherService from './teacher.service';
+import examService from '../exam/exam.service';
 
-import {Request, Response } from "express";
-
-const router = require('express').Router();
-const Teacher = require('./teacher.model');
-const Exam = require('../exam/exam.model');
-const teacherService = require('./teacher.service');
-const examService = require('../exam/exam.service');
+const router = express.Router();
 
 router.route('/').get(async (req: Request, res: Response) => {
   const teachers = await teacherService.getAll();
@@ -16,7 +14,7 @@ router.route('/').get(async (req: Request, res: Response) => {
 
 router.route('/:teacherId').get(async (req: Request, res: Response) => {
     const { teacherId } = req.params;
-    const teacher = await teacherService.getById(teacherId);
+    const teacher = await teacherService.getById(teacherId!);
 
     if (!teacher) {
         res.json({});
@@ -28,7 +26,7 @@ router.route('/:teacherId').get(async (req: Request, res: Response) => {
 
 router.route('/:teacherId/exams').get(async (req: Request, res: Response) => {
     const { teacherId } = req.params;
-    const exams = await examService.getExamsByTeacherId(teacherId);
+    const exams = await examService.getExamsByTeacherId(teacherId!);
 
     res.json(exams.map(Exam.toResponse));
 });
@@ -44,24 +42,25 @@ router.route('/').post(async (req: Request, res: Response) => {
 router.route('/:teacherId').put(async (req: Request, res: Response) => {
     const { teacherId } = req.params;
     const { lastName, firstName, degree } = req.body;
-    const old = {...await teacherService.getById(teacherId)};
+    const old: Teacher = {...await teacherService.getById(teacherId!)} as Teacher;
 
     const updated = await teacherService.updateTeacher({
-        id: teacherId,
+        id: teacherId!,
         lastName,
         firstName,
         degree,
     })
 
-    res.send(`Updated: old: ${JSON.stringify(Teacher.toResponse(old))} updated: ${JSON.stringify(Teacher.toResponse(updated))}`);
+    res.send(`Updated: old: ${JSON.stringify(Teacher.toResponse(old))} updated: ${JSON.stringify(Teacher.toResponse(updated!))}`);
 });
 
 router.route('/:teacherId').delete(async (req: Request, res: Response) => {
     const { teacherId } = req.params;
 
-    const deleted = await teacherService.deleteTeacher(teacherId);
+    const deleted = await teacherService.deleteTeacher(teacherId!);
 
-    res.send(`Deleted: ${JSON.stringify(Teacher.toResponse(deleted))}`);
+    res.send(`Deleted: ${JSON.stringify(Teacher.toResponse(deleted as Teacher))}`);
 });
 
-module.exports = router;
+// module.exports = router;
+export default router;

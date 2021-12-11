@@ -1,10 +1,15 @@
-export {};
-
-const uuid = require('uuid');
 
 class Teacher {
+  id: string;
+
+  lastName: string;
+
+  firstName: string;
+
+  degree: string;
+
   constructor({
-      id = uuid(),
+      id = `${Math.random() * 10000}`,
       lastName = 'lastName',
       firstName = 'firstName',
       degree = 'High'
@@ -15,9 +20,9 @@ class Teacher {
     this.degree = degree;
   }
 
-  static toResponse(teacher) {
+  static toResponse(teacher: Teacher) {
     return { ...teacher };
   }
 }
 
-module.exports = Teacher;
+export default Teacher;

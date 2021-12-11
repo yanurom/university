@@ -1,13 +1,10 @@
-export {};
+import express, { Request, Response } from 'express';
+import Abiturient from './abiturient.model';
+import abiturientService from './abiturient.service';
+import examService from '../exam/exam.service';
+import Exam from '../exam/exam.model';
 
-import {Request, Response } from "express";
-
-const router = require('express').Router();
-const Abiturient = require('./abiturient.model');
-const abiturientService = require('./abiturient.service');
-const examService = require('../exam/exam.service');
-const Exam = require('../exam/exam.model');
-
+const router = express.Router();
 
 router.route('/').get(async (req: Request, res: Response) => {
   const abiturients = await abiturientService.getAll();
@@ -17,7 +14,7 @@ router.route('/').get(async (req: Request, res: Response) => {
 
 router.route('/:abiturientId').get(async (req: Request, res: Response) => {
     const { abiturientId } = req.params;
-    const abiturient = await abiturientService.getById(abiturientId);
+    const abiturient = await abiturientService.getById(abiturientId!);
 
     if (!abiturient) {
         res.json({});
@@ -29,7 +26,7 @@ router.route('/:abiturientId').get(async (req: Request, res: Response) => {
 
 router.route('/:abiturientId/exams').get(async (req: Request, res: Response) => {
     const { abiturientId } = req.params;
-    const exams = await examService.getExamsByAbiturientId(abiturientId);
+    const exams = await examService.getExamsByAbiturientId(abiturientId!);
     res.json(exams.map(Exam.toResponse));
 });
 
@@ -44,24 +41,24 @@ router.route('/').post(async (req: Request, res: Response) => {
 router.route('/:abiturientId').put(async (req: Request, res: Response) => {
     const { abiturientId } = req.params;
     const { lastName, firstName, numCertificate } = req.body;
-    const old = {...await abiturientService.getById(abiturientId)};
+    const old: Abiturient = {...await abiturientService.getById(abiturientId!)} as Abiturient;
 
     const updated = await abiturientService.updateAbiturient({
-        id: abiturientId,
+        id: abiturientId!,
         lastName,
         firstName,
         numCertificate,
     })
 
-    res.send(`Updated: old: ${JSON.stringify(Abiturient.toResponse(old))} updated: ${JSON.stringify(Abiturient.toResponse(updated))}`);
+    res.send(`Updated: old: ${JSON.stringify(Abiturient.toResponse(old))} updated: ${JSON.stringify(Abiturient.toResponse(updated!))}`);
 });
 
 router.route('/:abiturientId').delete(async (req: Request, res: Response) => {
     const { abiturientId } = req.params;
 
-    const deleted = await abiturientService.deleteAbiturient(abiturientId);
+    const deleted = await abiturientService.deleteAbiturient(abiturientId!);
 
-    res.send(`Deleted: ${JSON.stringify(Abiturient.toResponse(deleted))}`);
+    res.send(`Deleted: ${JSON.stringify(Abiturient.toResponse(deleted as Abiturient))}`);
 });
 
-module.exports = router;
+export default router;
