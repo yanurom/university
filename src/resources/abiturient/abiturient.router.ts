@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
-import Abiturient from './abiturient.model';
+import Abiturient from './abiturient.entity';
 import abiturientService from './abiturient.service';
 import examService from '../exam/exam.service';
-import Exam from '../exam/exam.model';
+import Exam from '../exam/exam.entity';
 
 const router = express.Router();
 
@@ -54,7 +54,7 @@ router.route('/:abiturientId').put(async (req: Request, res: Response, next: Nex
         numCertificate,
     })
 
-    res.send(`Updated: old: ${JSON.stringify(Abiturient.toResponse(old))} updated: ${JSON.stringify(Abiturient.toResponse(updated!))}`);
+    res.send(`Updated: old: ${JSON.stringify(Abiturient.toResponse(old))} updated: ${JSON.stringify(updated!)}`);
     next();
 });
 
@@ -63,7 +63,7 @@ router.route('/:abiturientId').delete(async (req: Request, res: Response, next: 
 
     const deleted = await abiturientService.deleteAbiturient(abiturientId!);
 
-    res.send(`Deleted: ${JSON.stringify(Abiturient.toResponse(deleted as Abiturient))}`);
+    res.send(`Deleted: ${JSON.stringify(deleted)}`);
     next();
 });
 

@@ -1,100 +1,26 @@
-export {};
-import { Exam } from "resources/exam/exam.memory.repository";
-import examRepo from '../exam/exam.memory.repository';
+import { EntityRepository, AbstractRepository } from 'typeorm';
+import Teacher from './teacher.entity';
 
-export interface Teacher {
-  "id": string;
-  "lastName": string;
-  "firstName": string;
-  "degree": string;
-}
-
-const teacherMock: Teacher[] = [
-  {
-    id: '112',
-    lastName: 'teacherLastName1',
-    firstName: 'teacherFirstName1',
-    degree: 'Low',
-  },
-  {
-    id: '111',
-    lastName: 'teacherLastName2',
-    firstName: 'teacherFirstName2',
-    degree: 'High',
-  },
-  {
-    id: '113',
-    lastName: 'teacherLastName3',
-    firstName: 'teacherFirstName3',
-    degree: 'Low',
-  },
-  {
-    id: '114',
-    lastName: 'teacherLastName5',
-    firstName: 'teacherFirstName5',
-    degree: 'High',
-  },
-  {
-    id: '115',
-    lastName: 'teacherLastName4',
-    firstName: 'teacherFirstName4',
-    degree: 'Low',
-  },
-  {
-    id: '116',
-    lastName: 'teacherLastName6',
-    firstName: 'teacherFirstName6',
-    degree: 'High',
-  },
-];
-
-const cascadeDeleteMock = async (id: string) => {
-  const allExams = await examRepo.getAll();
-  allExams.forEach((_exam: Exam) => {
-    const exam = _exam;
-    if (exam.teacherId === id) {
-      exam.teacherId = null;
-    }
-  });
-  await examRepo.examCascadeMock();
-};
-
-const getAll = async () => teacherMock;
-
-const createTeacher = async (teacher: Teacher) => teacherMock.push(teacher); 
-
-const updateTeacher = async (teacher: Teacher) => {
-  const index = teacherMock.findIndex(_ => _.id === teacher.id);
-
-  teacherMock[index]!.firstName = teacher.firstName || teacherMock[index]!.firstName;
-  teacherMock[index]!.lastName = teacher.lastName || teacherMock[index]!.lastName;
-  teacherMock[index]!.degree = teacher.degree || teacherMock[index]!.degree;
-
-  return teacherMock[index];
-}; 
-
-const deleteTeacher = async (id: string) => {
-  const index = teacherMock.findIndex((teacher) => teacher.id === id);
-
-  if (index >= 0) {
-    const teachers = teacherMock.splice(index, 1);
-
-    cascadeDeleteMock(id);
-
-    return teachers[0];
+@EntityRepository(Teacher)
+export class TeacherRepository extends AbstractRepository<Teacher> {
+  createTeacher(teacher: Omit<Teacher, 'id'>) {
+    const teachers = this.repository.create(teacher);
+    return this.manager.save(teachers);
   }
 
-  return { message: `No teacher with id: ${  id}` }
-};
+  getAll() {
+    return this.repository.find();
+  }
 
-export type TeacherRepo = {
-  getAll: () => Promise<Teacher[]>,
-  createTeacher: (teacher: Teacher) => Promise<number>,
-  updateTeacher: (teacher: Teacher) => Promise<Teacher | undefined>,
-  deleteTeacher: (id: string) => Promise<Teacher | {
-    message: string;
-  } | undefined>
+  getById(id: string) {
+    return this.repository.findOne({ id });
+  }
+
+  updateTeacher(id: string, teacher: Omit<Teacher, 'id'>) {
+    return this.repository.update({ id }, teacher);
+  }
+
+  deleteTeacher(id: string) {
+    return this.repository.delete({ id });
+  }
 }
-
-export default { getAll, createTeacher, updateTeacher, deleteTeacher };
-// module.exports = { getAll, createTeacher, updateTeacher, deleteTeacher };

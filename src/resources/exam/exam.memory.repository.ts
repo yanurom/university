@@ -1,147 +1,26 @@
-import { AbiturientRepo } from "resources/abiturient/abiturient.memory.repository";
-import { TeacherRepo } from "resources/teacher/teacher.memory.repository";
+import { EntityRepository, AbstractRepository } from 'typeorm';
+import Exam from "./exam.entity";
 
-export interface Exam {
-  id: string;
-  abiturientId: string | null;
-  teacherId: string | null;
-  subject: string;
-  date: string;
-  score: number;
+@EntityRepository(Exam)
+export class ExamRepository extends AbstractRepository<Exam> {
+  createExam(task: Omit<Exam, 'id'>) {
+    const tasks = this.repository.create(task);
+    return this.manager.save(tasks);
+  }
+
+  getAll() {
+    return this.repository.find();
+  }
+
+  getById(id: string) {
+    return this.repository.findOne({ id });
+  }
+
+  updateExam(id: string, data: Partial<Exam>) {
+    return this.repository.update({ id }, data);
+  }
+
+  deleteExam(id: string) {
+    return this.repository.delete({ id });
+  }
 }
-
-const examsMock: Exam[] = [
-  {
-    id: '1',
-    abiturientId: '124',
-    teacherId: '111',
-    subject: 'Math',
-    date: '16 June 2001',
-    score: 8,
-  },
-  {
-    id: '2',
-    abiturientId: '124',
-    teacherId: '112',
-    subject: 'Physics',
-    date: '18 June 2001',
-    score: 7,
-  },
-  {
-    id: '3',
-    abiturientId: '124',
-    teacherId: '112',
-    subject: 'Biology',
-    date: '20 June 2001',
-    score: 10,
-  },
-
-  {
-    id: '4',
-    abiturientId: '125',
-    teacherId: '111',
-    subject: 'Math',
-    date: '16 June 2001',
-    score: 6,
-  },
-  {
-    id: '5',
-    abiturientId: '125',
-    teacherId: '112',
-    subject: 'Physics',
-    date: '18 June 2001',
-    score: 2,
-  },
-  {
-    id: '6',
-    abiturientId: '125',
-    teacherId: '112',
-    subject: 'Biology',
-    date: '20 June 2001',
-    score: 3,
-  },
-
-  {
-    id: '7',
-    abiturientId: '126',
-    teacherId: '111',
-    subject: 'Math',
-    date: '16 June 2001',
-    score: 10,
-  },
-  {
-    id: '8',
-    abiturientId: '126',
-    teacherId: '112',
-    subject: 'Physics',
-    date: '18 June 2001',
-    score: 9,
-  },
-  {
-    id: '9',
-    abiturientId: '126',
-    teacherId: '112',
-    subject: 'Biology',
-    date: '20 June 2001',
-    score: 1,
-  },
-];
-const repos: {abiturientRepo: AbiturientRepo | null, teacherRepo: TeacherRepo | null} = {
-  abiturientRepo: null,
-  teacherRepo: null,
-};
-const initRepo = async ({ abiturientRepo, teacherRepo } : {abiturientRepo: AbiturientRepo, teacherRepo: TeacherRepo}) => {
-  repos.abiturientRepo = abiturientRepo;
-  repos.teacherRepo = teacherRepo;
-}
-
-const constraintsCheck = async (teacherId: string | null, abiturientId: string | null) => ((await repos.teacherRepo!.getAll()).filter(_ => _.id === teacherId).length > 0
-  && (await repos.abiturientRepo!.getAllAbiturients()).filter(_ => _.id === abiturientId).length > 0)
-
-const deleteExam = async (id: string) => {
-  const index = examsMock.findIndex(_ => _.id === id);
-
-  if (index >= 0) {
-    const exams = examsMock.splice(index, 1);
-    return exams[0];
-  } 
-
-  return { message: `No exam with id: ${  id}` }
-};
-
-const cascadeDeleteMock = async () => {
-  const pendingDelete: string[] = [];
-
-  examsMock.forEach(exam => {
-    if (exam.teacherId === null && exam.abiturientId === null) {
-      pendingDelete.push(exam.id);
-    }
-  });
-
-  const allPromises: Promise<Exam | {
-    message: string;
-} | undefined>[] = [];
-  pendingDelete.forEach(id => allPromises.push(deleteExam(id)))
-  await Promise.all(allPromises);
-};
-
-const getAll = async () => examsMock;
-
-const createExam = async (exam: Exam) => (await constraintsCheck(exam.teacherId, exam.abiturientId))
-  ? examsMock.push(exam)
-  : 0;
-
-const updateExam = async (updatedExam: Exam) => {
-  const index = examsMock.findIndex((exam: Exam) => exam.id === updatedExam.id);
-
-  examsMock[index]!.abiturientId = updatedExam.abiturientId || examsMock[index]!.abiturientId;
-  examsMock[index]!.teacherId = updatedExam.teacherId || examsMock[index]!.teacherId;
-  examsMock[index]!.subject = updatedExam.subject || examsMock[index]!.subject;
-  examsMock[index]!.date = updatedExam.date || examsMock[index]!.date;
-  examsMock[index]!.score = updatedExam.score || examsMock[index]!.score;
-
-  return examsMock[index]!;
-};
-
-export default { getAll, updateExam, deleteExam, examCascadeMock: cascadeDeleteMock, createExam, initRepo };
-// module.exports = { getAll, updateExam, deleteExam, examCascadeMock: cascadeDeleteMock, createExam, initRepo };
