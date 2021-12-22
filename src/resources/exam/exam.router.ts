@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
-import Exam from './exam.model';
-import Teacher from '../teacher/teacher.model';
+import Exam from './exam.entity';
+import Teacher from '../teacher/teacher.entity';
 import examService from './exam.service';
 import teacherService from '../teacher/teacher.service';
 
@@ -59,7 +59,7 @@ router.route('/:examId').put(async (req: Request, res: Response, next: NextFunct
     const { abiturientId, teacherId, subject, date, score } = req.body;
     const old: Exam = {...await examService.getById(examId!)} as Exam;
 
-    const updated: Exam = await examService.updateExam({
+    const updated = await examService.updateExam({
         id: examId!,
         abiturientId,
         teacherId,
@@ -68,7 +68,7 @@ router.route('/:examId').put(async (req: Request, res: Response, next: NextFunct
         score,
     })
 
-    res.send(`Updated: old: ${JSON.stringify(Exam.toResponse(old))} updated: ${JSON.stringify(Exam.toResponse(updated))}`);
+    res.send(`Updated: old: ${JSON.stringify(Exam.toResponse(old))} updated: ${JSON.stringify(updated)}`);
     next();
 });
 
@@ -77,7 +77,7 @@ router.route('/:examId').delete(async (req: Request, res: Response, next: NextFu
 
     const deleted = await examService.deleteExam(examId!);
 
-    res.send(`Deleted: ${JSON.stringify(Exam.toResponse(deleted as Exam))}`);
+    res.send(`Deleted: ${JSON.stringify(deleted)}`);
     next();
 });
 

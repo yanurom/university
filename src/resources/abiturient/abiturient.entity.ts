@@ -1,8 +1,14 @@
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
+@Entity({ name: 'abiturients' })
 export default class Abiturient {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column()
   lastName: string;
+  @Column()
   firstName: string;
+  @Column()
   numCertificate: number;
 
   constructor({

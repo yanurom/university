@@ -1,15 +1,24 @@
 
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+@Entity({ name: 'exams' })
 class Exam {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column('varchar', { length: 36, nullable: true })
   abiturientId:  string | null;
 
+  @Column('varchar', { length: 36, nullable: true })
   teacherId: string | null;
 
+  @Column()
   subject: string;
 
+  @Column()
   date: string;
 
+  @Column()
   score: number;
 
   constructor({
